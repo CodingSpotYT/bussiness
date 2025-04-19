@@ -178,14 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         document.body.style.overflow = 'hidden';
-        
-        // Animate modal content
-        gsap.from('.modal-content', {
-            y: -50,
-            opacity: 0,
-            duration: 0.4,
-            ease: "back.out(1.7)"
-        });
     }
     
     function closeModal() {
