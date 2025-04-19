@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="script.js" defer></script>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
     <!-- Header -->
@@ -21,7 +24,7 @@
                     <li><a href="#portfolio">Portfolio</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#" class="contact-btn btn-nav">Get Started</a></li>
+                    <li><a href="#contact" class="contact-btn btn-nav">Get Started</a></li>
                 </ul>
                 <div class="mobile-menu" id="mobile-menu">
                     <span></span>
@@ -38,7 +41,7 @@
         <section id="home" class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <div class="hero-text animate-slide-in">
+                    <div class="hero-text">
                         <h1>Custom Web Design for your Business</h1>
                         <p>Elevate your online presence with professional, affordable, and high-converting websites tailored to your specific business needs.</p>
                         <div class="hero-btns">
@@ -46,7 +49,7 @@
                             <a href="#portfolio" class="btn btn-outline">View Our Work</a>
                         </div>
                     </div>
-                    <div class="hero-image animate-fade">
+                    <div class="hero-image">
                         <img src="https://via.placeholder.com/600x400/f5f9ff/3563E9?text=Web+Design" alt="Website Design Illustration">
                     </div>
                 </div>
@@ -63,53 +66,53 @@
                     <p>Expert web development solutions for small businesses</p>
                 </div>
                 <div class="services-grid">
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-laptop-code"></i>
                         </div>
                         <h3>Custom Website Design</h3>
                         <p>Beautiful, responsive websites designed to showcase your brand and convert visitors into customers.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
                         <h3>Mobile-First Development</h3>
                         <p>Responsive designs that work flawlessly across all devices and screen sizes.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <h3>E-Commerce Solutions</h3>
                         <p>Custom online stores with secure payment gateways and user-friendly shopping experiences.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-search"></i>
                         </div>
                         <h3>SEO Optimization</h3>
                         <p>Improve your site's visibility in search engines and drive organic traffic to your business.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-tachometer-alt"></i>
                         </div>
                         <h3>Performance Optimization</h3>
                         <p>Fast-loading websites that provide excellent user experience and higher conversion rates.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div class="service-card animate-slide-up">
+                    <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-tools"></i>
                         </div>
                         <h3>Website Maintenance</h3>
                         <p>Regular updates, security checks, and optimizations to keep your website running smoothly.</p>
-                        <a href="#" class="btn-text">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn-text contact-btn">Learn More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -180,7 +183,7 @@
                     </div>
                 </div>
                 <div class="portfolio-more">
-                    <a href="#" class="btn">View All Projects</a>
+                    <a href="#contact" class="btn contact-btn">View All Projects</a>
                 </div>
             </div>
         </section>
@@ -289,7 +292,7 @@
             </div>
         </section>
 
-        <!-- About Section (Preview) -->
+        <!-- About Section -->
         <section id="about" class="about-hero">
             <div class="container">
                 <div class="about-content">
@@ -312,7 +315,7 @@
                                 <span class="stat-label">Years Experience</span>
                             </div>
                         </div>
-                        <a href="#" class="btn">Learn More About Us</a>
+                        <a href="#contact" class="btn contact-btn">Learn More About Us</a>
                     </div>
                     <div class="about-image">
                         <img src="https://via.placeholder.com/500x400/f5f9ff/3563E9?text=Our+Team" alt="Our Team">
@@ -406,7 +409,7 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="cta">
+        <section id="contact" class="cta">
             <div class="container">
                 <h2>Ready to Transform Your Online Presence?</h2>
                 <p>Let's create a stunning website that drives results for your business.</p>
@@ -432,19 +435,19 @@
                 <div class="footer-column">
                     <h3>Services</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Custom Website Design</a></li>
-                        <li><a href="#">Mobile-First Development</a></li>
-                        <li><a href="#">E-Commerce Solutions</a></li>
-                        <li><a href="#">SEO Optimization</a></li>
-                        <li><a href="#">Website Maintenance</a></li>
+                        <li><a href="#services">Custom Website Design</a></li>
+                        <li><a href="#services">Mobile-First Development</a></li>
+                        <li><a href="#services">E-Commerce Solutions</a></li>
+                        <li><a href="#services">SEO Optimization</a></li>
+                        <li><a href="#services">Website Maintenance</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Company</h3>
                     <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Our Work</a></li>
-                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#portfolio">Our Work</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#contact" class="contact-btn">Contact</a></li>
                     </ul>
