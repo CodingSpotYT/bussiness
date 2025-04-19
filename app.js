@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize GSAP animations
+    initAnimations();
+    
     // Mobile Menu Toggle
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
@@ -8,16 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.toggle('active');
             navLinks.classList.toggle('active');
             
-            // Transform hamburger to X
+            // Animate hamburger to X
             const spans = this.querySelectorAll('span');
             if (this.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                gsap.to(spans[0], { rotation: 45, y: 6, duration: 0.3 });
+                gsap.to(spans[1], { opacity: 0, duration: 0.2 });
+                gsap.to(spans[2], { rotation: -45, y: -6, duration: 0.3 });
             } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
+                gsap.to(spans, { rotation: 0, y: 0, opacity: 1, duration: 0.3 });
             }
         });
     }
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navItems = document.querySelectorAll('.nav-links a');
     navItems.forEach(item => {
         item.addEventListener('click', function() {
-            if (mobileMenu.classList.contains('active')) {
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
                 mobileMenu.click();
             }
         });
@@ -58,13 +59,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 portfolioItems.forEach(item => {
                     if (filter === 'all') {
-                        item.style.display = 'block';
+                        gsap.to(item, { display: 'block', opacity: 1, duration: 0.3 });
                     } else {
                         const categories = item.getAttribute('data-category').split(' ');
                         if (categories.includes(filter)) {
-                            item.style.display = 'block';
+                            gsap.to(item, { display: 'block', opacity: 1, duration: 0.3 });
                         } else {
-                            item.style.display = 'none';
+                            gsap.to(item, { display: 'none', opacity: 0, duration: 0.3 });
                         }
                     }
                 });
@@ -73,66 +74,70 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Testimonial slider
-    const testimonialTrack = document.getElementById('testimonial-track');
-    const prevButton = document.getElementById('prev-testimonial');
-    const nextButton = document.getElementById('next-testimonial');
+    const testimonialTrack = document.querySelector('.testimonial-track');
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
     const dots = document.querySelectorAll('.dot');
     let currentSlide = 0;
+    const slides = document.querySelectorAll('.testimonial-slide');
+    let slideInterval;
     
     function updateSlider() {
-        if (testimonialTrack) {
-            testimonialTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        if (testimonialTrack && slides.length > 0) {
+            gsap.to(testimonialTrack, {
+                x: `-${currentSlide * 100}%`,
+                duration: 0.5,
+                ease: "power2.out"
+            });
             
             // Update dots
             dots.forEach((dot, index) => {
-                if (index === currentSlide) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
+                dot.classList.toggle('active', index === currentSlide);
             });
         }
     }
     
+    function startSlider() {
+        slideInterval = setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlider();
+        }, 5000);
+    }
+    
     if (prevButton && nextButton) {
         prevButton.addEventListener('click', function() {
-            if (currentSlide > 0) {
-                currentSlide--;
-            } else {
-                currentSlide = dots.length - 1; // Loop to last slide
-            }
+            clearInterval(slideInterval);
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
             updateSlider();
+            startSlider();
         });
         
         nextButton.addEventListener('click', function() {
-            if (currentSlide < dots.length - 1) {
-                currentSlide++;
-            } else {
-                currentSlide = 0; // Loop to first slide
-            }
+            clearInterval(slideInterval);
+            currentSlide = (currentSlide + 1) % slides.length;
             updateSlider();
+            startSlider();
         });
     }
     
     // Dot navigation
     dots.forEach((dot, index) => {
         dot.addEventListener('click', function() {
+            clearInterval(slideInterval);
             currentSlide = index;
             updateSlider();
+            startSlider();
         });
     });
     
-    // Auto-advance testimonials every 5 seconds
-    setInterval(function() {
-        if (testimonialTrack) {
-            if (currentSlide < dots.length - 1) {
-                currentSlide++;
-            } else {
-                currentSlide = 0;
-            }
-            updateSlider();
-        }
-    }, 5000);
+    // Start auto-advance
+    if (testimonialTrack && slides.length > 0) {
+        startSlider();
+        
+        // Pause on hover
+        testimonialTrack.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        testimonialTrack.addEventListener('mouseleave', startSlider);
+    }
     
     // Pricing Toggle Functionality
     const toggleSwitch = document.querySelector('.toggle-switch input[type="checkbox"]');
@@ -156,65 +161,113 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Consultation Modal Functionality
+    // Modal functionality
     const modal = document.getElementById('consultation-modal');
     const contactBtns = document.querySelectorAll('.contact-btn');
     const closeBtn = document.querySelector('.close-modal');
     
-// Enhanced modal functionality
-function openModal() {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    // Force reflow to trigger animations
-    modal.offsetWidth;
-    
-    modal.style.opacity = '1';
-    document.querySelector('.modal-content').style.transform = 'translateY(0)';
-}
-
-function closeModal() {
-    modal.style.opacity = '0';
-    document.querySelector('.modal-content').style.transform = 'translateY(-50px)';
-    
-    setTimeout(function() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }, 300); // Match the transition duration in CSS
-}
-
-    // Open modal
-    contactBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            openModal();
+    function openModal() {
+        // Show the modal first with display block
+        modal.classList.add('active');
+        modal.style.display = 'block';
+        
+        // Then animate the opacity
+        gsap.to(modal, { 
+            opacity: 1,
+            duration: 0.3
         });
-    });
-
+        
+        document.body.style.overflow = 'hidden';
+        
+        // Animate modal content
+        gsap.from('.modal-content', {
+            y: -50,
+            opacity: 0,
+            duration: 0.4,
+            ease: "back.out(1.7)"
+        });
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        gsap.to(modal, {
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+    
+    // Open modal
+    if (contactBtns.length > 0 && modal) {
+        contactBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#contact') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openModal();
+                }
+            });
+        });
+    }
+    
     // Close modal
-    if (closeBtn) {
+    if (closeBtn && modal) {
         closeBtn.addEventListener('click', closeModal);
     }
-
+    
     // Close modal when clicking outside content
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
+    if (modal) {
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    }
     
     // Form submission handling
     const form = document.getElementById('consultation-form');
-    if (form) {
+    if (form && modal) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Here you would typically send the form data to your server
-            // For now, we'll just show an alert and close the modal
-            alert('Thank you for your consultation request! We will contact you soon.');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            form.reset();
+            // Create a success message element
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thank you for your consultation request! We will contact you soon.';
+            
+            // Animate form out and success message in
+            gsap.to(form, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                onComplete: () => {
+                    form.style.display = 'none';
+                    const modalContent = modal.querySelector('.modal-content');
+                    if (modalContent) {
+                        modalContent.appendChild(successMessage);
+                        gsap.from(successMessage, {
+                            opacity: 0,
+                            y: 20,
+                            duration: 0.4
+                        });
+                        
+                        // Close the modal after 3 seconds
+                        setTimeout(() => {
+                            closeModal();
+                            // Reset the form and remove success message
+                            form.reset();
+                            form.style.display = 'block';
+                            gsap.to(form, { opacity: 1, y: 0 });
+                            if (successMessage.parentNode) {
+                                successMessage.parentNode.removeChild(successMessage);
+                            }
+                        }, 3000);
+                    }
+                }
+            });
         });
     }
     
@@ -222,10 +275,20 @@ function closeModal() {
     const backToTopButton = document.getElementById('back-to-top');
     
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 300) {
-            backToTopButton.classList.add('visible');
-        } else {
-            backToTopButton.classList.remove('visible');
+        if (backToTopButton) {
+            if (window.scrollY > 300) {
+                gsap.to(backToTopButton, {
+                    opacity: 1,
+                    visibility: 'visible',
+                    duration: 0.3
+                });
+            } else {
+                gsap.to(backToTopButton, {
+                    opacity: 0,
+                    visibility: 'hidden',
+                    duration: 0.3
+                });
+            }
         }
     });
     
@@ -237,83 +300,195 @@ function closeModal() {
             });
         });
     }
-    
-    // Animation on scroll
-    const animatedElements = document.querySelectorAll('.animate-slide-up');
-    
-    function checkInView() {
-        animatedElements.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-            const elementBottom = element.getBoundingClientRect().bottom;
-            
-            // Element is in viewport
-            if (elementTop < window.innerHeight - 100 && elementBottom > 0) {
-                element.classList.add('appear');
-            }
+});
+
+function initAnimations() {
+    // Check if ScrollTrigger is available
+    if (typeof ScrollTrigger !== 'undefined') {
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Hero section animations
+        gsap.from('.hero-text h1', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.3,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-text p', {
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.6,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-btns', {
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.9,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-image', {
+            x: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.6,
+            ease: "power3.out"
+        });
+        
+        // Service cards animation
+        gsap.utils.toArray('.service-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.1,
+                ease: "back.out(1.2)"
+            });
+        });
+        
+        // Portfolio items animation
+        gsap.utils.toArray('.portfolio-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.6,
+                delay: i * 0.1,
+                ease: "power2.out"
+            });
+        });
+        
+        // Process steps animation
+        gsap.utils.toArray('.process-step').forEach((step, i) => {
+            gsap.from(step, {
+                scrollTrigger: {
+                    trigger: step,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                x: i % 2 === 0 ? -50 : 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.2,
+                ease: "power2.out"
+            });
+        });
+        
+        // Testimonial cards animation
+        gsap.from('.testimonial-card', {
+            scrollTrigger: {
+                trigger: '.testimonials',
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+        
+        // About section animation
+        gsap.from('.about-text', {
+            scrollTrigger: {
+                trigger: '.about-hero',
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            x: -50,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+        
+        gsap.from('.about-image', {
+            scrollTrigger: {
+                trigger: '.about-hero',
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            x: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+        
+        // Pricing cards animation
+        gsap.utils.toArray('.pricing-plan').forEach((plan, i) => {
+            gsap.from(plan, {
+                scrollTrigger: {
+                    trigger: plan,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.2,
+                ease: "back.out(1.2)"
+            });
+        });
+        
+        // CTA section animation
+        gsap.from('.cta', {
+            scrollTrigger: {
+                trigger: '.cta',
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+    } else {
+        console.warn("ScrollTrigger not available. Basic animations will still work.");
+        
+        // Basic animations without ScrollTrigger
+        gsap.from('.hero-text h1', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.3,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-text p', {
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.6,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-btns', {
+            y: 30,
+            opacity: 0,
+            duration: 1,
+            delay: 0.9,
+            ease: "power3.out"
+        });
+        
+        gsap.from('.hero-image', {
+            x: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.6,
+            ease: "power3.out"
         });
     }
-    
-    // Check elements on load
-    checkInView();
-    
-    // Check elements on scroll
-    window.addEventListener('scroll', checkInView);
-});
-// Modal functionality
-const modal = document.getElementById('consultation-modal');
-const contactBtns = document.querySelectorAll('.contact-btn');
-const closeBtn = document.querySelector('.close-modal');
-
-// Open modal when any contact button is clicked
-contactBtns.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    });
-});
-
-// Close modal when X is clicked
-if (closeBtn) {
-    closeBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
-    });
-}
-
-// Close modal when clicking outside content
-window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-});
-
-// Form submission handling
-const form = document.getElementById('consultation-form');
-if (form) {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Here you would typically send the form data to your server
-        // For now, we'll just show a success message and close the modal
-        
-        // Create a success message element
-        const successMessage = document.createElement('div');
-        successMessage.className = 'success-message';
-        successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thank you for your consultation request! We will contact you soon.';
-        
-        // Replace the form with the success message
-        form.parentNode.replaceChild(successMessage, form);
-        
-        // Close the modal after 3 seconds
-        setTimeout(function() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Reset the form and remove success message
-            form.reset();
-            successMessage.parentNode.replaceChild(form, successMessage);
-        }, 3000);
-    });
 }
